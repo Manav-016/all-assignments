@@ -17,6 +17,13 @@
   - `npm run test-calculator`
 */
 
-class Calculator {}
+class Calculator {
+  constructor () {
+    this.result = 0;
+  }
+}
 
 module.exports = Calculator;
+
+
+//recursion funcion : treat every element like one and if clause identified call the function recurively to evaluate that.

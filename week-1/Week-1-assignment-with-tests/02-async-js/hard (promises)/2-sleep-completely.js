@@ -4,5 +4,13 @@
  */
 
 function sleep (seconds) {
+    const promiseForSleep = new Promise((resolve) => {
+        setTimeout(() => {
+            resolve()
+        }, seconds);
+    });
 
+    promiseForSleep.then(() => {
+        return;
+    })
 }

@@ -29,9 +29,104 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
+const bodyparser = require("body-parser");
+const path = require("path");
 const PORT = 3000;
 const app = express();
+
+app.use(bodyparser.json());
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+const fs = require("fs");
+const { randomUUID } = require("crypto");
+
+app.post("/signup", (req, res) => {
+  const payload = req.body;
+
+  fs.readFile(
+    path.join(__dirname, "./auth.data.json"),
+    "utf8",
+    (err, jsonString) => {
+      if (err) {
+        console.log("Error reading file from disk:", err);
+        return;
+      }
+
+      const authData = JSON.parse(jsonString);
+      let duplicate = false;
+
+      authData.forEach((ele) => {
+        if (ele?.email === payload?.email) {
+          duplicate = true;
+        }
+      });
+
+      if (duplicate) {
+        return res.send("Bad Request");
+      }
+
+      payload.id = randomUUID();
+      authData.push(payload);
+
+      fs.writeFile(path.join(__dirname, "./auth.data.json"), JSON.stringify(authData), () => {
+        res.status(201).send("Signup successful");
+      });
+    }
+  );
+});
+
+app.post("/login", (req, res) => {
+  const payload = req.body;
+
+  fs.readFile(path.join(__dirname, "./auth.data.json"), "utf8", (err, jsonString) => {
+    if (err) {
+      console.log("Error reading file from disk:", err);
+      return;
+    }
+
+    let element = {};
+
+    const authData = JSON.parse(jsonString);
+    authData.forEach((ele) => {
+      if (
+        ele?.email === payload?.email &&
+        ele?.password === payload?.password
+      ) {
+        element = ele;
+      }
+    });
+    if (Object.keys(element).length > 0) {
+      return res.status(200).send(element);
+    }
+    res.status(401).send("Unautorized User.");
+  });
+});
+
+app.get("/data", (req, res) => {
+  const payload = req.headers;
+
+  fs.readFile(path.join(__dirname, "./auth.data.json"), "utf8", (err, jsonString) => {
+    if (err) {
+      console.log("Error reading file from disk:", err);
+      return;
+    }
+
+    let element = {};
+
+    const authData = JSON.parse(jsonString);
+    authData.forEach((ele) => {
+      if (
+        ele?.email === payload?.email &&
+        ele?.password === payload?.password
+      ) {
+        element = ele;
+      }
+    });
+    if (Object.keys(element).length > 0) {
+      return res.status(200).send({ users : authData});
+    }
+  res.status(401).send("Unauthorized");
+  });
+});
 
 module.exports = app;

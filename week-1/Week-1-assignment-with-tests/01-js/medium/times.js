@@ -8,5 +8,23 @@ Hint - use Date class exposed in JS
 */
 
 function calculateTime(n) {
-    return 0.01;
+    //moving to cammel case from snake case for naming conventions.
+
+    let startTime = new Date().getMilliseconds();
+    console.log(startTime);
+
+    let sum = 0;
+
+    for (let iterator = 1; iterator <= n; iterator++) {
+        sum = sum + iterator;
+    }
+    
+    let endTime = new Date().getMilliseconds();
+    console.log(endTime);
+
+    return (endTime - startTime) / 1000;
 }
+
+console.log(calculateTime(100));
+console.log(calculateTime(100000));
+console.log(calculateTime(1000000000));

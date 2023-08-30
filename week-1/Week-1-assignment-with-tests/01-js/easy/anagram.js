@@ -8,6 +8,27 @@
 */
 
 function isAnagram(str1, str2) {
+  /**
+   * SOLUTION 1:
+   * 
+   * return str1.toLowerCase().split("").sort().join("") === str2.toLowerCase().split("").sort().join("");
+   */
+
+  //SOLUTION 2:
+
+  let str1_char_freq = Array(256).fill(0), str2_char_freq = Array(256).fill(0), str1_trimmed = str1.replace(/ /g, ""), str2_trimmed = str2.replace(/ /g, "");
+
+  str1_trimmed.toLowerCase().split("").forEach(char => {
+    let charCode = char.charCodeAt(0);
+    str1_char_freq[charCode] = str1_char_freq[charCode] + 1;
+  });
+
+  str2_trimmed.toLowerCase().split("").forEach(char => {
+    let charCode = char.charCodeAt(0);
+    str2_char_freq[charCode] = str2_char_freq[charCode] + 1;
+  });
+
+  return str1_char_freq.toString() === str2_char_freq.toString();
 
 }
 
